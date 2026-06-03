@@ -40,7 +40,15 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- [ ] Application code is implemented in TypeScript.
+- [ ] Every HTTP input validates body, query params, route params, and used headers with Zod.
+- [ ] The structure separates domain, application, ports, and adapters.
+- [ ] Controllers only translate HTTP requests and responses and invoke use cases.
+- [ ] Automated tests cover every feature and relevant HTTP contracts and integrations.
+- [ ] Added complexity is justified and the simplest viable design was considered.
+- [ ] New entity IDs are generated as UUID v4.
+- [ ] Exposed errors follow the documented standard format.
+- [ ] `spec.md`, `plan.md`, and `tasks.md` exist before implementation begins.
 
 ## Project Structure
 
@@ -65,12 +73,15 @@ specs/[###-feature]/
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+# [REMOVE IF UNUSED] Option 1: Single TypeScript project (DEFAULT)
 src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+├── domain/
+├── application/
+│   ├── ports/
+│   └── use-cases/
+└── adapters/
+    ├── http/
+    └── persistence/
 
 tests/
 ├── contract/
@@ -80,9 +91,9 @@ tests/
 # [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
 backend/
 ├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
+│   ├── domain/
+│   ├── application/
+│   └── adapters/
 └── tests/
 
 frontend/

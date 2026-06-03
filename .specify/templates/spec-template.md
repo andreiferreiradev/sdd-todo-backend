@@ -98,6 +98,13 @@
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
+### Constitutional Requirements *(mandatory when applicable)*
+
+- **HTTP Inputs**: [List body, query params, route params, and used headers that require Zod validation, or N/A]
+- **Entity IDs**: [List newly created entities that require UUID v4 IDs, or N/A]
+- **Error Cases**: [List expected failures that MUST use the standard error format]
+- **Automated Tests**: [List the unit, HTTP contract, and relevant integration behaviors required for this feature]
+
 ### Key Entities *(include if feature involves data)*
 
 - **[Entity 1]**: [What it represents, key attributes without implementation]
