@@ -1,11 +1,12 @@
 import type { Clock } from "../ports/clock.js";
 import type { IdGenerator } from "../ports/id-generator.js";
 import type { TaskRepository } from "../ports/task-repository.js";
-import { Task } from "../../domain/entities/task.js";
+import { Task, type TaskPriority } from "../../domain/entities/task.js";
 
 export interface CreateTaskInput {
   title: string;
   description?: string | undefined;
+  priority?: TaskPriority | undefined;
 }
 
 export class CreateTask {
@@ -22,6 +23,7 @@ export class CreateTask {
       ...(input.description === undefined
         ? {}
         : { description: input.description }),
+      ...(input.priority === undefined ? {} : { priority: input.priority }),
       now: this.clock.now(),
     });
 

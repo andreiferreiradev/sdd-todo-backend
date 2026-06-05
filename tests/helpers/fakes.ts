@@ -10,6 +10,7 @@ import { UpdateTask } from "../../src/application/use-cases/update-task.js";
 
 export const TASK_ID = "123e4567-e89b-42d3-a456-426614174000";
 export const SECOND_TASK_ID = "223e4567-e89b-42d3-a456-426614174000";
+export const THIRD_TASK_ID = "423e4567-e89b-42d3-a456-426614174000";
 export const MISSING_TASK_ID = "323e4567-e89b-42d3-a456-426614174000";
 
 export class FixedIdGenerator implements IdGenerator {

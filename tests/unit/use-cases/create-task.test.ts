@@ -8,11 +8,13 @@ test("creates a task with generated UUID, pending status, and timestamps", () =>
   const task = dependencies.createTask.execute({
     title: "  Learn TypeScript  ",
     description: "  Use strict mode  ",
+    priority: 2,
   });
 
   assert.equal(task.id, TASK_ID);
   assert.equal(task.title, "Learn TypeScript");
   assert.equal(task.description, "Use strict mode");
+  assert.equal(task.priority, 2);
   assert.equal(task.status, "pending");
   assert.equal(task.createdAt.toISOString(), "2026-06-01T12:00:00.000Z");
   assert.equal(task.updatedAt, task.createdAt);

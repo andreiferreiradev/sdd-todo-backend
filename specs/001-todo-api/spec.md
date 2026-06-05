@@ -15,7 +15,8 @@ e updatedAt. A API deve validar entradas e retornar erros padronizados."
 
 ### User Story 1 - Criar tarefa (Priority: P1)
 
-O usuario registra uma nova tarefa informando um titulo e, opcionalmente, uma descricao.
+O usuario registra uma nova tarefa informando um titulo e, opcionalmente, uma descricao
+e uma prioridade.
 
 **Why this priority**: Criar tarefas e o ponto de entrada indispensavel para qualquer
 outro fluxo.
@@ -29,7 +30,9 @@ identificador, status inicial e datas de criacao e atualizacao.
    registrada com identificador unico, status `pending`, `createdAt` e `updatedAt`.
 2. **Given** um titulo valido e uma descricao, **When** o usuario cria uma tarefa,
    **Then** a descricao e preservada na tarefa registrada.
-3. **Given** um titulo ausente, vazio ou composto apenas por espacos, **When** o usuario
+3. **Given** um titulo valido e uma prioridade `1`, `2` ou `3`, **When** o usuario cria
+   uma tarefa, **Then** a prioridade e preservada como `high`, `medium` ou `low`.
+4. **Given** um titulo ausente, vazio ou composto apenas por espacos, **When** o usuario
    tenta criar uma tarefa, **Then** a operacao falha com erro padronizado de validacao.
 
 ---
@@ -54,12 +57,17 @@ identificador retornado na criacao.
    recebe os dados completos da tarefa.
 4. **Given** um identificador valido sem tarefa correspondente, **When** o usuario busca
    por ele, **Then** recebe um erro padronizado de tarefa nao encontrada.
+5. **Given** tarefas com e sem prioridade, **When** o usuario lista filtrando por
+   prioridade, **Then** recebe somente as tarefas daquela prioridade.
+6. **Given** tarefas com e sem prioridade, **When** o usuario lista ordenando por
+   prioridade, **Then** recebe tarefas priorizadas na ordem solicitada e tarefas sem
+   prioridade ao final.
 
 ---
 
 ### User Story 3 - Atualizar tarefa (Priority: P2)
 
-O usuario altera o titulo ou a descricao de uma tarefa existente.
+O usuario altera o titulo, a descricao ou a prioridade de uma tarefa existente.
 
 **Why this priority**: Tarefas evoluem depois do registro inicial e precisam continuar
 representando o trabalho real.
@@ -69,8 +77,8 @@ novos valores e a data de atualizacao foram persistidos.
 
 **Acceptance Scenarios**:
 
-1. **Given** uma tarefa existente, **When** o usuario altera o titulo ou a descricao,
-   **Then** os novos valores sao salvos e `updatedAt` e atualizado.
+1. **Given** uma tarefa existente, **When** o usuario altera o titulo, a descricao ou a
+   prioridade, **Then** os novos valores sao salvos e `updatedAt` e atualizado.
 2. **Given** uma tarefa existente, **When** o usuario tenta definir um titulo vazio ou
    composto apenas por espacos, **Then** a operacao falha com erro padronizado de
    validacao.
@@ -123,13 +131,16 @@ na listagem e nao pode mais ser encontrada.
 - Uma atualizacao sem nenhum campo editavel MUST ser rejeitada como entrada invalida.
 - `updatedAt` MUST ser igual a `createdAt` na criacao e renovado quando a tarefa mudar.
 - Uma tarefa concluida pode ser consultada, atualizada e removida normalmente.
+- Prioridades diferentes de `1`, `2` ou `3` MUST ser rejeitadas.
+- Tarefas sem prioridade MUST continuar visiveis na listagem geral e aparecer ao final
+  quando a listagem for ordenada por prioridade.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-- **FR-001**: O sistema MUST permitir criar uma tarefa com titulo obrigatorio e descricao
-  opcional.
+- **FR-001**: O sistema MUST permitir criar uma tarefa com titulo obrigatorio, descricao
+  opcional e prioridade opcional.
 - **FR-002**: O sistema MUST rejeitar titulos ausentes, vazios ou compostos apenas por
   espacos.
 - **FR-003**: O sistema MUST gerar um identificador UUID v4 unico para cada nova tarefa.
@@ -137,7 +148,8 @@ na listagem e nao pode mais ser encontrada.
 - **FR-005**: O sistema MUST registrar `createdAt` e `updatedAt` para cada tarefa.
 - **FR-006**: O sistema MUST permitir listar todas as tarefas existentes.
 - **FR-007**: O sistema MUST permitir buscar uma tarefa pelo identificador.
-- **FR-008**: O sistema MUST permitir atualizar o titulo ou a descricao de uma tarefa.
+- **FR-008**: O sistema MUST permitir atualizar o titulo, a descricao ou a prioridade de
+  uma tarefa.
 - **FR-009**: O sistema MUST atualizar `updatedAt` sempre que os dados ou o status de uma
   tarefa mudarem.
 - **FR-010**: O sistema MUST permitir concluir uma tarefa, alterando seu status para
@@ -150,6 +162,11 @@ na listagem e nao pode mais ser encontrada.
   concluir ou remover uma tarefa inexistente.
 - **FR-015**: Todo erro exposto MUST conter um codigo estavel e uma mensagem legivel,
   podendo incluir detalhes relevantes para diagnostico.
+- **FR-016**: O sistema MUST aceitar somente prioridades `1` (`high`), `2` (`medium`) e
+  `3` (`low`), armazenadas como smallint.
+- **FR-017**: O sistema MUST permitir filtrar a listagem por prioridade.
+- **FR-018**: O sistema MUST permitir ordenar a listagem por prioridade em ordem
+  ascendente ou descendente.
 
 ### Constitutional Requirements *(mandatory when applicable)*
 
@@ -163,8 +180,9 @@ na listagem e nao pode mais ser encontrada.
 
 ### Key Entities
 
-- **Tarefa**: Item de trabalho com `id`, `title`, `description`, `status`, `createdAt` e
-  `updatedAt`. O status permitido e `pending` ou `completed`.
+- **Tarefa**: Item de trabalho com `id`, `title`, `description`, `priority`, `status`,
+  `createdAt` e `updatedAt`. O status permitido e `pending` ou `completed`; `priority` e
+  opcional e aceita `1` (`high`), `2` (`medium`) ou `3` (`low`).
 - **Erro Padronizado**: Falha exposta ao usuario com `code`, `message` e `details`
   opcional.
 
@@ -187,9 +205,8 @@ na listagem e nao pode mais ser encontrada.
 
 - A primeira versao nao inclui autenticacao, autorizacao ou separacao de tarefas por
   usuario.
-- A listagem retorna todas as tarefas existentes; paginacao, filtros e ordenacao
-  configuravel ficam fora do escopo inicial.
-- A atualizacao edita titulo e descricao. A mudanca para `completed` ocorre pela operacao
-  explicita de conclusao.
+- A listagem retorna todas as tarefas existentes; paginacao fica fora do escopo inicial.
+- A atualizacao edita titulo, descricao e prioridade. A mudanca para `completed` ocorre
+  pela operacao explicita de conclusao.
 - Reabrir uma tarefa concluida para `pending` fica fora do escopo inicial.
 - A persistencia definitiva e a estrategia de armazenamento serao definidas no plano.

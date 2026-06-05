@@ -15,10 +15,12 @@ test("updates editable fields, removes description, and renews timestamp", () =>
   const task = dependencies.updateTask.execute(TASK_ID, {
     title: " Updated ",
     description: null,
+    priority: 1,
   });
 
   assert.equal(task.title, "Updated");
   assert.equal(task.description, undefined);
+  assert.equal(task.priority, 1);
   assert.equal(task.status, "pending");
   assert.equal(task.updatedAt.toISOString(), "2026-06-01T13:00:00.000Z");
 });

@@ -5,6 +5,7 @@ import {
   MISSING_TASK_ID,
   SECOND_TASK_ID,
   TASK_ID,
+  THIRD_TASK_ID,
   createTestContext,
 } from "../../helpers/fakes.js";
 
@@ -18,6 +19,35 @@ test("lists an empty collection and then every created task", () => {
   assert.deepEqual(
     dependencies.listTasks.execute().map((task) => task.title),
     ["First", "Second"],
+  );
+});
+
+test("filters and sorts tasks by priority", () => {
+  const { dependencies } = createTestContext([
+    TASK_ID,
+    SECOND_TASK_ID,
+    THIRD_TASK_ID,
+  ]);
+
+  dependencies.createTask.execute({ title: "Low", priority: 3 });
+  dependencies.createTask.execute({ title: "High", priority: 1 });
+  dependencies.createTask.execute({ title: "No priority" });
+
+  assert.deepEqual(
+    dependencies.listTasks.execute({ priority: 1 }).map((task) => task.title),
+    ["High"],
+  );
+  assert.deepEqual(
+    dependencies
+      .listTasks.execute({ sortBy: "priority", sortOrder: "asc" })
+      .map((task) => task.title),
+    ["High", "Low", "No priority"],
+  );
+  assert.deepEqual(
+    dependencies
+      .listTasks.execute({ sortBy: "priority", sortOrder: "desc" })
+      .map((task) => task.title),
+    ["Low", "High", "No priority"],
   );
 });
 

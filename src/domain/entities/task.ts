@@ -1,11 +1,13 @@
 import { ApplicationError } from "../errors/application-error.js";
 
 export type TaskStatus = "pending" | "completed";
+export type TaskPriority = 1 | 2 | 3;
 
 export interface TaskProps {
   id: string;
   title: string;
   description?: string;
+  priority?: TaskPriority;
   status: TaskStatus;
   createdAt: Date;
   updatedAt: Date;
@@ -15,12 +17,14 @@ export interface CreateTaskProps {
   id: string;
   title: string;
   description?: string;
+  priority?: TaskPriority;
   now: Date;
 }
 
 export interface UpdateTaskProps {
   title?: string | undefined;
   description?: string | null | undefined;
+  priority?: TaskPriority | undefined;
 }
 
 function normalizeTitle(title: string): string {
@@ -41,6 +45,7 @@ export class Task {
       ...(input.description === undefined
         ? {}
         : { description: input.description.trim() }),
+      ...(input.priority === undefined ? {} : { priority: input.priority }),
       status: "pending",
       createdAt: input.now,
       updatedAt: input.now,
@@ -57,6 +62,10 @@ export class Task {
 
   get description(): string | undefined {
     return this.props.description;
+  }
+
+  get priority(): TaskPriority | undefined {
+    return this.props.priority;
   }
 
   get status(): TaskStatus {
@@ -84,6 +93,10 @@ export class Task {
       }
     }
 
+    if (input.priority !== undefined) {
+      this.props.priority = input.priority;
+    }
+
     this.props.updatedAt = now;
   }
 
@@ -103,6 +116,9 @@ export class Task {
       ...(this.props.description === undefined
         ? {}
         : { description: this.props.description }),
+      ...(this.props.priority === undefined
+        ? {}
+        : { priority: this.props.priority }),
       status: this.props.status,
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt,

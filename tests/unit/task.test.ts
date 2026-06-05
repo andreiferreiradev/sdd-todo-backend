@@ -12,11 +12,13 @@ test("creates a trimmed pending task with matching timestamps", () => {
     id: TASK_ID,
     title: "  Study hexagonal architecture  ",
     description: "  Read the plan  ",
+    priority: 1,
     now: createdAt,
   });
 
   assert.equal(task.title, "Study hexagonal architecture");
   assert.equal(task.description, "Read the plan");
+  assert.equal(task.priority, 1);
   assert.equal(task.status, "pending");
   assert.equal(task.createdAt, createdAt);
   assert.equal(task.updatedAt, createdAt);
@@ -32,7 +34,7 @@ test("rejects blank titles", () => {
   );
 });
 
-test("updates editable fields and removes description", () => {
+test("updates editable fields, priority, and removes description", () => {
   const task = Task.create({
     id: TASK_ID,
     title: "Initial",
@@ -40,10 +42,11 @@ test("updates editable fields and removes description", () => {
     now: createdAt,
   });
 
-  task.update({ title: "  Updated  ", description: null }, updatedAt);
+  task.update({ title: "  Updated  ", description: null, priority: 3 }, updatedAt);
 
   assert.equal(task.title, "Updated");
   assert.equal(task.description, undefined);
+  assert.equal(task.priority, 3);
   assert.equal(task.updatedAt, updatedAt);
 });
 

@@ -9,6 +9,7 @@ import type { UpdateTask } from "../../../application/use-cases/update-task.js";
 import { ApplicationError } from "../../../domain/errors/application-error.js";
 import {
   createTaskSchema,
+  listTasksQuerySchema,
   taskIdSchema,
   updateTaskSchema,
 } from "../schemas/task-schemas.js";
@@ -44,7 +45,10 @@ export function registerTaskRoutes(
     return reply.status(201).send(task);
   });
 
-  app.get("/tasks", async () => dependencies.listTasks.execute());
+  app.get("/tasks", async (request) => {
+    const query = parse(listTasksQuerySchema, request.query);
+    return dependencies.listTasks.execute(query);
+  });
 
   app.get("/tasks/:id", async (request) => {
     const { id } = parse(taskIdSchema, request.params);

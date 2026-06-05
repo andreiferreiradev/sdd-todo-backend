@@ -9,6 +9,7 @@ Representa um item de trabalho gerenciado pela API.
 | `id` | string | yes | UUID v4 unico, gerado na criacao |
 | `title` | string | yes | Remover espacos externos; rejeitar valor vazio |
 | `description` | string | no | Texto opcional; pode ser removido em uma atualizacao |
+| `priority` | smallint | no | `1` = high, `2` = medium, `3` = low |
 | `status` | enum | yes | `pending` ou `completed`; inicia como `pending` |
 | `createdAt` | string datetime | yes | Definido na criacao |
 | `updatedAt` | string datetime | yes | Igual a `createdAt` na criacao; renovado em mudancas |
@@ -25,6 +26,7 @@ pending -- complete --> completed
 - Concluir uma tarefa `completed` novamente e idempotente.
 - Reabrir uma tarefa `completed` para `pending` esta fora do escopo.
 - Atualizar titulo ou descricao nao altera o status.
+- Atualizar prioridade nao altera o status.
 - Remover uma tarefa e permitido em qualquer status.
 
 ## Application Errors
@@ -71,6 +73,7 @@ O primeiro adaptador armazena tarefas em memoria. A porta nao assume tecnologia 
 |-------|------|----------|
 | `title` | string | yes |
 | `description` | string | no |
+| `priority` | smallint | no |
 
 ### UpdateTaskInput
 
@@ -78,5 +81,19 @@ O primeiro adaptador armazena tarefas em memoria. A porta nao assume tecnologia 
 |-------|------|----------|
 | `title` | string | no |
 | `description` | string or null | no |
+| `priority` | smallint | no |
 
 Ao menos um campo deve estar presente. `description: null` remove a descricao existente.
+`priority`, quando presente, deve ser `1` (`high`), `2` (`medium`) ou `3` (`low`).
+
+### ListTasksInput
+
+| Field | Type | Required |
+|-------|------|----------|
+| `priority` | smallint | no |
+| `sortBy` | string | no |
+| `sortOrder` | string | no |
+
+`priority`, quando presente, deve ser `1`, `2` ou `3`. `sortBy` aceita `priority`.
+`sortOrder` aceita `asc` ou `desc` e usa `asc` como padrao. Tarefas sem prioridade
+permanecem na listagem geral e aparecem ao final quando ordenadas por prioridade.

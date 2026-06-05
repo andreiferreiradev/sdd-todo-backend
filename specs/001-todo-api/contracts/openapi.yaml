@@ -26,6 +26,28 @@ paths:
     get:
       summary: Listar tarefas
       operationId: listTasks
+      parameters:
+        - name: priority
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/TaskPriority'
+        - name: sortBy
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - priority
+        - name: sortOrder
+          in: query
+          required: false
+          schema:
+            type: string
+            default: asc
+            enum:
+              - asc
+              - desc
       responses:
         '200':
           description: Lista de tarefas
@@ -140,6 +162,8 @@ components:
           minLength: 1
         description:
           type: string
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
         status:
           type: string
           enum:
@@ -162,6 +186,8 @@ components:
           minLength: 1
         description:
           type: string
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
     UpdateTaskInput:
       type: object
       additionalProperties: false
@@ -174,6 +200,16 @@ components:
           type:
             - string
             - 'null'
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
+    TaskPriority:
+      type: integer
+      format: int32
+      description: Prioridade da tarefa. 1 = high, 2 = medium, 3 = low.
+      enum:
+        - 1
+        - 2
+        - 3
     Error:
       type: object
       additionalProperties: false
