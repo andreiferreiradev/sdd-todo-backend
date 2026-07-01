@@ -38,6 +38,20 @@ function normalizeTitle(title: string): string {
 export class Task {
   private constructor(private readonly props: TaskProps) {}
 
+  static restore(input: TaskProps): Task {
+    return new Task({
+      id: input.id,
+      title: input.title,
+      ...(input.description === undefined
+        ? {}
+        : { description: input.description }),
+      ...(input.priority === undefined ? {} : { priority: input.priority }),
+      status: input.status,
+      createdAt: input.createdAt,
+      updatedAt: input.updatedAt,
+    });
+  }
+
   static create(input: CreateTaskProps): Task {
     return new Task({
       id: input.id,

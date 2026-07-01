@@ -41,7 +41,7 @@ export function registerTaskRoutes(
 ): void {
   app.post("/tasks", async (request, reply) => {
     const input = parse(createTaskSchema, request.body);
-    const task = dependencies.createTask.execute(input);
+    const task = await dependencies.createTask.execute(input);
     return reply.status(201).send(task);
   });
 
@@ -68,7 +68,7 @@ export function registerTaskRoutes(
 
   app.delete("/tasks/:id", async (request, reply) => {
     const { id } = parse(taskIdSchema, request.params);
-    dependencies.deleteTask.execute(id);
+    await dependencies.deleteTask.execute(id);
     return reply.status(204).send();
   });
 }

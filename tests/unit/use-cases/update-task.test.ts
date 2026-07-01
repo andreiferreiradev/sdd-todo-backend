@@ -7,12 +7,12 @@ import {
   createTestContext,
 } from "../../helpers/fakes.js";
 
-test("updates editable fields, removes description, and renews timestamp", () => {
+test("updates editable fields, removes description, and renews timestamp", async () => {
   const { dependencies, clock } = createTestContext();
-  dependencies.createTask.execute({ title: "Initial", description: "Remove" });
+  await dependencies.createTask.execute({ title: "Initial", description: "Remove" });
   clock.set(new Date("2026-06-01T13:00:00.000Z"));
 
-  const task = dependencies.updateTask.execute(TASK_ID, {
+  const task = await dependencies.updateTask.execute(TASK_ID, {
     title: " Updated ",
     description: null,
     priority: 1,
@@ -25,10 +25,10 @@ test("updates editable fields, removes description, and renews timestamp", () =>
   assert.equal(task.updatedAt.toISOString(), "2026-06-01T13:00:00.000Z");
 });
 
-test("reports a missing task during update", () => {
+test("reports a missing task during update", async () => {
   const { dependencies } = createTestContext();
-  assert.throws(
-    () => dependencies.updateTask.execute(MISSING_TASK_ID, { title: "Nope" }),
+  await assert.rejects(
+    dependencies.updateTask.execute(MISSING_TASK_ID, { title: "Nope" }),
     (error) =>
       error instanceof ApplicationError && error.code === "TASK_NOT_FOUND",
   );

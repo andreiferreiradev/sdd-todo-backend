@@ -9,14 +9,14 @@ export class UpdateTask {
     private readonly clock: Clock,
   ) {}
 
-  execute(id: string, input: UpdateTaskProps): Task {
-    const task = this.repository.findById(id);
+  async execute(id: string, input: UpdateTaskProps): Promise<Task> {
+    const task = await this.repository.findById(id);
     if (!task) {
       throw new ApplicationError("TASK_NOT_FOUND", "Task not found");
     }
 
     task.update(input, this.clock.now());
-    this.repository.save(task);
+    await this.repository.save(task);
     return task;
   }
 }

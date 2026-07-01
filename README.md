@@ -1,7 +1,7 @@
 # SDD Todo API
 
-API HTTP didatica para gerenciar tarefas TODO com TypeScript, Fastify, Zod e arquitetura
-hexagonal.
+API HTTP didatica para gerenciar tarefas TODO com TypeScript, Fastify, Zod, SQLite local e
+arquitetura hexagonal.
 
 ## Requirements
 
@@ -19,6 +19,18 @@ npm run build
 ```
 
 O servidor inicia em `http://localhost:3000`. Use `PORT` para escolher outra porta.
+
+## Persistence
+
+As tarefas sao persistidas em um arquivo SQLite local preparado por migrations antes de o
+servidor atender requisicoes. Use `SQLITE_FILENAME` para escolher o arquivo:
+
+```powershell
+$env:SQLITE_FILENAME = ".data/todos.sqlite"
+npm run dev
+```
+
+Se `SQLITE_FILENAME` nao for informado, a aplicacao usa `.data/todos.sqlite`.
 
 ## Endpoints
 
@@ -44,8 +56,9 @@ Invoke-RestMethod -Method Get -Uri http://localhost:3000/tasks
 
 ## Notes
 
-As tarefas ficam em memoria e sao perdidas quando o processo encerra. O adaptador pode ser
-substituido por persistencia duravel sem mover regras de negocio para a camada HTTP.
+O acesso a SQLite/Knex fica restrito ao adaptador de persistencia e ao bootstrap de banco.
+Controllers HTTP chamam apenas casos de uso, e os casos de uso dependem somente da porta
+de repositorio.
 
 Erros expostos seguem o formato:
 
