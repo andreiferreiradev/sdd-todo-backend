@@ -6,11 +6,16 @@ import {
 } from "./adapters/http/routes/task-routes.js";
 import { createDependencies } from "./config/dependencies.js";
 
-export function buildApp(
-  dependencies: TaskRouteDependencies = createDependencies(),
-): FastifyInstance {
+import cors from "@fastify/cors";
+
+export function buildApp(dependencies?: TaskRouteDependencies): FastifyInstance {
+  const routeDependencies = dependencies ?? createDependencies();
   const app = Fastify();
+
+  app.register(cors, {
+    origin: "*",
+  })
   registerErrorHandler(app);
-  registerTaskRoutes(app, dependencies);
+  registerTaskRoutes(app, routeDependencies);
   return app;
 }

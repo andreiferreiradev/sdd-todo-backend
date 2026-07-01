@@ -16,7 +16,7 @@ export class CreateTask {
     private readonly clock: Clock,
   ) {}
 
-  execute(input: CreateTaskInput): Task {
+  async execute(input: CreateTaskInput): Promise<Task> {
     const task = Task.create({
       id: this.idGenerator.generate(),
       title: input.title,
@@ -27,7 +27,7 @@ export class CreateTask {
       now: this.clock.now(),
     });
 
-    this.repository.create(task);
+    await this.repository.create(task);
     return task;
   }
 }

@@ -10,8 +10,8 @@ export interface ListTasksInput {
 export class ListTasks {
   constructor(private readonly repository: TaskRepository) {}
 
-  execute(input: ListTasksInput = {}): Task[] {
-    let tasks = this.repository.findAll();
+  async execute(input: ListTasksInput = {}): Promise<Task[]> {
+    let tasks = await this.repository.findAll();
 
     if (input.priority !== undefined) {
       tasks = tasks.filter((task) => task.priority === input.priority);

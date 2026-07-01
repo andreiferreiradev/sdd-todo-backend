@@ -7,20 +7,20 @@ import {
   createTestContext,
 } from "../../helpers/fakes.js";
 
-test("deletes pending and completed tasks", () => {
+test("deletes pending and completed tasks", async () => {
   const { dependencies, repository } = createTestContext();
-  dependencies.createTask.execute({ title: "Delete me" });
-  dependencies.completeTask.execute(TASK_ID);
+  await dependencies.createTask.execute({ title: "Delete me" });
+  await dependencies.completeTask.execute(TASK_ID);
 
-  dependencies.deleteTask.execute(TASK_ID);
+  await dependencies.deleteTask.execute(TASK_ID);
 
-  assert.equal(repository.findById(TASK_ID), undefined);
+  assert.equal(await repository.findById(TASK_ID), undefined);
 });
 
-test("reports a missing task during deletion", () => {
+test("reports a missing task during deletion", async () => {
   const { dependencies } = createTestContext();
-  assert.throws(
-    () => dependencies.deleteTask.execute(MISSING_TASK_ID),
+  await assert.rejects(
+    dependencies.deleteTask.execute(MISSING_TASK_ID),
     (error) =>
       error instanceof ApplicationError && error.code === "TASK_NOT_FOUND",
   );
